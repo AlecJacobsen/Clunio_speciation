@@ -29,7 +29,6 @@ class ecology_model:
         self.Ys = self.Ys + np.random.normal(0,self.sd,self.Ys.shape)
         
     def calc_Fit(self):
-        #print(self.Ys)
         ### Getting interaction strengths 
         y_mat = np.repeat(self.Ys,self.Ys.shape).reshape(self.Ys.shape[0],self.Ys.shape[0])
         arr = -((self.Ys - y_mat)**2)/(2*(self.Cw**2))
@@ -45,7 +44,6 @@ class ecology_model:
         return ((np.sin(2*np.pi*(actual_Xs/15) - 5))/2 - 0.5)
     
     def reproduce(self):
-        #print(' ')
         ### calculate the number of offspring based off fitness
         num_offs = ((self.Fit * self.num_kids)).astype(int) 
         ### Calculate depth (y) based off emergence phenotype (x)
@@ -60,10 +58,8 @@ class ecology_model:
         ### mutating kids phenotype (x) and setting it for next gen
         kids_xs = x_array[~np.isnan(x_array)]
         self.Xs = (kids_xs + np.random.normal(0.5,self.mu,kids_xs.shape)).astype(int)%30 ## needs mod 
-        #print(self.Xs.shape)
         ### setting ys for next gen
         self.Ys = y_array[~np.isnan(y_array)]    
-        #print(self.Ys.shape)
 
     def run_generation(self):
         self.disperse_pop()
@@ -74,14 +70,10 @@ class ecology_model:
         self.init_pop()
         if return_array:
             res = np.zeros((self.gens,30))
-            #try:
             for i in range(self.gens):
                 self.run_generation()
                 res[i,:] = np.histogram(self.Xs, bins = 30, range = (0,30))[0]
             return res
-            #except (IndexError, ValueError):
-            #    print('Population went extict')
-            #    return res
         elif return_N:
             N = []
             try:
@@ -148,23 +140,14 @@ class ecology_model:
 print('Running Sim')                                                                                       
 
 ## For CwSd Param Sweep
-#Cws = np.linspace(0.025,1,40)                                                                              
-#sds = np.linspace(0.025,1,40)                                                                              
-#                                                                                                           
-#arr = np.zeros((len(Cws),len(sds)))                                                                        
-#for i, Cw in enumerate(Cws):                                                                               
-#    for j, sd in enumerate(sds):                                                                           
-#        arr[i,j] = ecology_model(sd = sd, Cw = Cw, K = 100, mu = 0.18, N0 = 10, X0 = 15, Y0 = 0, heritability = 0, num_kids = 5, gens = 500 
-#).simulate()                                                                                               
-#                                                                                                           
-#np.save('%s/rep%s.npy' % (args.out_dir,args.rep),arr) 
+Cws = np.linspace(0.025,1,40)                                                                              
+sds = np.linspace(0.025,1,40)                                                                              
+                                                                                                           
+arr = np.zeros((len(Cws),len(sds)))                                                                        
+for i, Cw in enumerate(Cws):                                                                               
+    for j, sd in enumerate(sds):                                                                           
+        arr[i,j] = ecology_model(sd = sd, Cw = Cw, K = 100, mu = 0.18, N0 = 10, X0 = 15, Y0 = 0, heritability = 0, num_kids = 5, gens = 500 
+).simulate()                                                                                               
+                                                                                                           
+np.save('%s/rep%s.npy' % (args.out_dir,args.rep),arr) 
 
-# Testing Different Initial States 
-res_arr = np.zeros((1000))
-phenos_arr = np.zeros((1000,30))
-for i in range(1000):
-    res,phenos  = ecology_model(sd = 0.25, Cw = 0.1, K = 100, mu = 0.18, N0 = 10, X0 = args.X, Y0 = 0, heritability = 0.25, num_kids = 5, gens = 1000).get_split()
-    res_arr[i] = res
-    phenos_arr[i,:] = phenos
-np.save('%s/X%s_splitGens.npy' % (args.out_dir,args.X), res_arr)
-np.save('%s/X%s_splitPhenos.npy' % (args.out_dir,args.X), phenos_arr)
