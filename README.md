@@ -6,15 +6,20 @@ doi: https://doi.org/10.1101/2025.09.16.676472
 `Ecology_model/` subfolders contain the code used to generate figures 3 and S1. These include Python and accomanying Bash scripts which call the Python scripts on a computing cluster using Slurm as a workload manager. The Bash scripts may have to be modified for use on other computing clusters. 
  - `Fig_3/`
  	- `run_optimized_eco_model.py` executes the simulations for the parameter sweep (figure 3).
- 	- `paramSweep.sbatch` runs `run_optimized_eco_model.py` 1000 times, launching no more than 25 jobs at a time (including itself). It outputs files labelled as `{output directory}/rep{replicate}.npy`. Output directory can be modified by changing the `out_dir` variable at the start of the script.
+ 	- `paramSweep.sbatch` runs `run_optimized_eco_model.py` 1000 times, launching no more than 25 jobs at a time (including itself). It outputs files labelled as `{output directory}/rep{replicate}.npy`. Results are output into the `CwSd_paramSweep/` folder.
  - `Sup_fig_1/`
 	 - `make-pip.py` runs a modified simulation with only a single, pre-specified mutation event in order to calculate pairwise invasibility of two phenotypes. 
-	 - `getPIPs.sbatch` runs `make-pip.py` 1000 times for all phenotypes and for three parameter combinations of $C_w$ and $\sigma_{dispersal}$ to generate the data for supplemental figure 1. Output files are labelled `{output directory}/Cw{value}-sd{value}_rep{replicate}.npy`. Output directory can be specified by changing the `out_dir` parameter at the start of the script.
+	 - `getPIPs.sbatch` runs `make-pip.py` 1000 times for all phenotypes and for three parameter combinations of $C_w$ and $\sigma_{dispersal}$ to generate the data for supplemental figure 1. Output files are labelled `{output directory}/Cw{value}-sd{value}_rep{replicate}.npy`. Results are output into the `pips/` folder.
 
 `Genetic_model/` subfolders contain the code to simulate the model with sexual reproduction, recombination, and an explicit genetic basis. These folders contain SLiM, Python, and Bash scripts. The SLiM scripts contain the code to run the simulations in SLiM. These SLiM scripts are then called by the python scripts, which specify which parameters are to be used for each simulation and receive/parse the output from SLiM. Lastly, the Bash scripts schedule and manage running the simulations on the computing cluster.
  - `Fig_4/`
-	- 
+	- `reduced_model.slim` contains the SLiM script that executes a single simulation, with parameters specified on the command line.
+    - `CwSd_ParamSweep.py` calls `reduced_model.slim` to run a parameter sweep over $C_w$ and $\sigma_{dispersal}$.
+    - `CwSd_paramSweep.sbatch` launches `CwSd_ParamSweep.py` within slurm jobs, while monitoring how many jobs are running on the cluster.
  - `Fig_5/`
+    - `reduced_model_OutputsFreqs.slim` contains the SLiM script that runs the simulation, outputting allele frequencies at the end of the simulation instead of phenotypes.
+    - `Gen_ParamSweep.py` calls `reduced_model_OutputsFreqs.slim` to run a parameter sweep over the genetic parameters 
+ - `Sup_fig_2/`
  - `Sup_fig_3/`
  - `Sup_fig_4/`
   
