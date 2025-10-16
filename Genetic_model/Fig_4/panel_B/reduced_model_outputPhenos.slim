@@ -1,7 +1,5 @@
 initialize(){
-	setwd('/Users/jacobsen/Desktop/Clunio_modeling/ClocksEvol_Lunar_nonWF');
-	
-	// Setting constants, variables from command line	
+	//defineConstant('params','testing');
 	// Evolutionary params	
 	defineConstant('pop_size',10);
 	defineConstant('mu',1e-7);
@@ -105,47 +103,19 @@ late(){
 	inds.fitnessScaling = competition * fitness_depth;
 }
 
-
-100 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen100_',params,'.vcf',sep = '')); 		
+1 early(){
+	for (i in seq(1,18)){
+		writeFile(paste('CwSd_paramSweep_examples/gen_model',params,'.output',sep = ''),'', append = T);
+	}
 }
-300 late(){
+1: late() {
 	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen300_',params,'.vcf',sep = '')); 		
-}
-500 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen500_',params,'.vcf',sep = '')); 		
-}
-700 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen700_',params,'.vcf',sep = '')); 		
-}
-900 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen900_',params,'.vcf',sep = '')); 		
-}
-1100 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen1100_',params,'.vcf',sep = '')); 		
-}
-1300 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen1300_',params,'.vcf',sep = '')); 		
-}
-1500 late(){
-	inds = sim.subpopulations.individuals;
-	sample = sample(inds,100);
-	sample.genomes.outputVCF(filePath = paste('vcfs/gen1500_',params,'.vcf',sep = '')); 		
+	if (sim.cycle % 3 == 0){
+		writeFile(paste('CwSd_paramSweep_examples/gen_model',params,'.output',sep = ''),paste(inds.x,sep = ','), append = T);
+		writeFile(paste('CwSd_paramSweep_examples/gen_model',params,'.output',sep = ''),paste(inds.y,sep = ','), append = T);
+		writeFile(paste('CwSd_paramSweep_examples/gen_model',params,'.output',sep = ''),paste(inds.fitnessScaling,sep = ','), append = T);
+		writeFile(paste('CwSd_paramSweep_examples/gen_model',params,'.output',sep = ''),paste(sim.mutationFrequencies(p1),sep = ','), append = T);	
+	}
 }
 
-
-
+1500 late(){}
