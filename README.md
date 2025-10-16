@@ -9,7 +9,9 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
 `Sd` corresponds to $\sigma_{dispersal}$, `Cw` is $C_w$, `K` is the carrying capacity, `mu` is the mutation rate, `N0` is the initial population size, `X0` is the initial phenotype of the population, `Y0` is the initial depth of the population, and `gens` is how many generations the simulation will run. `sim.simulate()` will return the number of peaks in the phenotypic distribution at the end of the simulation by default. If `return_array = True`, then it will return the distribution of phenotypes. If `return_array = True` and `return_Y = False`, then it will return both the distrbution of phenotypes and the distribution of individuals over depth. Finally, `return_N = True` returns the population size over the course of the simulation.
 
 #####################################################################################
+
 !! All `.sbatch` files will have to be modified for use on other computing clusters !! 
+
 #####################################################################################
 
 `Ecology_model/` subfolders contain the code used to generate figures 3 and S1. These include Python and accomanying Bash scripts which call the Python scripts on a computing cluster using Slurm as a workload manager. 
