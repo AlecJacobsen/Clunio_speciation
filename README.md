@@ -23,8 +23,7 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
 	 - `make-pip.py` runs a modified simulation with only a single, pre-specified mutation event in order to calculate pairwise invasibility of two phenotypes. 
 	 - `getPIPs.sbatch` runs `make-pip.py` 1000 times for all phenotypes and for three parameter combinations of $C_w$ and $\sigma_{dispersal}$ to generate the data for supplemental figure 1. Output files are labelled `{output directory}/Cw{value}-sd{value}_rep{replicate}.npy`. Results are output into the `pips/` folder. Generating the data for supplemental figure 1 can then be done by executing `sbatch getPIPs.sbatch` within the `Ecology_model/Sup_fig_1/` directory.
 
-
-
+#############################################################
 
 `Genetic_model/` subfolders contain the code to simulate the model with sexual reproduction, recombination, and an explicit genetic basis. These folders contain SLiM, Python, and Bash scripts. The SLiM scripts contain the code to run the simulations in SLiM. These SLiM scripts are then called by the python scripts, which specify which parameters are to be used for each simulation and receive/parse the output from SLiM. Lastly, the Bash scripts schedule and manage running the simulations on the computing cluster. SLiM simulations are carried out within a conda environment. This environment can be created by executing `conda env create --name slim --file=SLiM_conda.yml` within the main directory.
  - `Fig_4/`
@@ -33,11 +32,26 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
     - `CwSd_paramSweep.sbatch` launches `CwSd_ParamSweep.py` within slurm jobs, while monitoring how many jobs are running on the cluster. Results will be output into the `CwSd_paramSweep` directory. Generating the data for figure 4 thus requires executing `sbatch CwSd_paramSweep.sbatch` within the `Genetic_model/Fig_4/` directory.
  - `Fig_5/`
     - `reduced_model_OutputsFreqs.slim` contains the SLiM script that runs the simulation, outputting allele frequencies at the end of the simulation instead of phenotypes.
-    - `Gen_ParamSweep.py` calls `reduced_model_OutputsFreqs.slim` to run a parameter sweep over the genetic parameters and collects the simulation results.
-    - `Gen_paramSweep.sbatch` then launches `Gen_ParamSweep.py` within slurm jobs 1000 times, monitoring how many jobs are running at any one time. Results will be output to the `Gen_paramSweep` directory. Generating the data for figure 5 can be done by exectuing `sbatch Gen_paramSweep.sbatch` within the `Genetic_model/Fig_4/` directory.
+    - `Gen_ParamSweep.py` calls `reduced_model_OutputsFreqs.slim` to run a parameter sweep over the genetic parameters $\sigma_{effecting}$, $P_{effecting}$, and $\sigma_{emergence}$, and collects the simulation results.
+    - `Gen_paramSweep.sbatch` then launches `Gen_ParamSweep.py` 1000 times within slurm jobs, monitoring how many jobs are running at any one time. Results will be output to the `Gen_paramSweep` directory. Generating the data for figure 5 can be done by exectuing `sbatch Gen_paramSweep.sbatch` within the `Genetic_model/Fig_5/` directory.
  - `Sup_fig_2/`
+    - `simulate_vcfs.slim` is a slim script that exectutes a single simluation run, and outputs .vcf files of alleles every 200 generations starting at generation 100. Vcfs will be output to the `vcfs` directory. Running the script can be done by executing the following code within the `Genetic_model/Sup_fig_2/` directory to generate the three simulation runs in supplemental figure 2.
+      ```
+      slim -d comp_sd=0.025 -d larval_dispersal=0.075 simulate_vcfs.slim
+      slim -d comp_sd=0.1 -d larval_dispersal=0.25 simulate_vcfs.slim
+      slim -d comp_sd=0.25 -d larval_dispersal=0.9 simulate_vcfs.slim
+      ```
  - `Sup_fig_3/`
+    - `getSplit_model.slim` runs the simulation, stopping when the population diverges. It then outputs the generation number and distribution of phenotypes for the population for the generation before divergence was detected.
+    - `initial_states.py` calls `getSplit_model.slim` 10000 times for the same parameter values, collecting the results and outputting them to the `inital_states/` directory.
+    - `initial_states.sbatch` launches `initial_states.py` once for each initial phenotype as sbatch jobs. Generating the divergence phenotype data for supplemental figure 3 can be done by executing `sbatch initial_states.sbatch` within the `Genetic_model/Sup_fig_3/` directory.
+    - `reduced_model.slim` runs a single simulation with a given set of parameters and outputs the distribution of phenotypes.
+    - `initial2final_states.py` calls `reduced_model.slim` 10000 times, collecting the results and outputting them to the `initial2final_stats/` directory.
+    - `initial2final_states.sbatch` launches `initial2final_states.py` for each initial phenotype as sbatch jobs. Generating the final phenotype data for supplemental figure 3 can be done by executing `sbatch initial2final_states.sbatch` within the `Genetic_model/Sup_fig_3/` directory.
  - `Sup_fig_4/`
+    - `reduced_model_flat.slim`, `reduced_model_linear.slim`, `reduced_model_unimodal.slim`, and `reduced_model_bimodal.slim` are all SLiM scripts that run a single simulation, with different environmental fitness functions $F_e$.
+    - `CwSd_ParamSweep_flat.py`, `CwSd_ParamSweep_linear.py`, `CwSd_ParamSweep_unimodal.py`, and `CwSd_ParamSweep_bimodal.py` call their respective SLiM scripts for run a parameter sweep over $C_w$ and $\sigma_{dispersal}$. Results are output to the `flat/`, `linear/`, `unimodal/`, and `bimodal/` directories, respectively.
+    - `CwSd_paramSweep.sbatch` launches each python script 1000 times, monitoring how many jobs are running simultaneously. Generating the data for supplemental figure 4 can be done by executing `sbatch CwSd_paramSweep.sbatch` within the `Genetic_model/Sup_fig_4/` directory.
   
 
 
