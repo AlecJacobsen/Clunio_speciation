@@ -11,7 +11,8 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
 
 !! All `.sbatch` files will have to be modified for use on other computing clusters !! 
 
-`Ecology_model/` subfolders contain the code used to generate figures 3 and S1. These include Python and accomanying Bash scripts which call the Python scripts on a computing cluster using Slurm as a workload manager. The Bash scripts may have to be modified for use on other computing clusters. 
+
+`Ecology_model/` subfolders contain the code used to generate figures 3 and S1. These include Python and accomanying Bash scripts which call the Python scripts on a computing cluster using Slurm as a workload manager. 
  - `Fig_3/`
  	- `run_optimized_eco_model.py` executes the simulations for the parameter sweep (figure 3).
  	- `paramSweep.sbatch` runs `run_optimized_eco_model.py` 1000 times, launching no more than 25 jobs at a time (including itself). It outputs files labelled as `{output directory}/rep{replicate}.npy`. Results are output into the `CwSd_paramSweep/` folder. Generating the data for figure 3 can be done by executing `sbatch paramSweep.sbatch` within the `Ecology_model/Fig_3/` directory.
@@ -20,7 +21,9 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
 	 - `getPIPs.sbatch` runs `make-pip.py` 1000 times for all phenotypes and for three parameter combinations of $C_w$ and $\sigma_{dispersal}$ to generate the data for supplemental figure 1. Output files are labelled `{output directory}/Cw{value}-sd{value}_rep{replicate}.npy`. Results are output into the `pips/` folder. Generating the data for supplemental figure 1 can then be done by executing `sbatch getPIPs.sbatch` within the `Ecology_model/Sup_fig_1/` directory.
 
 
-`Genetic_model/` subfolders contain the code to simulate the model with sexual reproduction, recombination, and an explicit genetic basis. These folders contain SLiM, Python, and Bash scripts. The SLiM scripts contain the code to run the simulations in SLiM. These SLiM scripts are then called by the python scripts, which specify which parameters are to be used for each simulation and receive/parse the output from SLiM. Lastly, the Bash scripts schedule and manage running the simulations on the computing cluster.
+
+
+`Genetic_model/` subfolders contain the code to simulate the model with sexual reproduction, recombination, and an explicit genetic basis. These folders contain SLiM, Python, and Bash scripts. The SLiM scripts contain the code to run the simulations in SLiM. These SLiM scripts are then called by the python scripts, which specify which parameters are to be used for each simulation and receive/parse the output from SLiM. Lastly, the Bash scripts schedule and manage running the simulations on the computing cluster. SLiM simulations are carried out within a conda environment. This environment can be created by executing `conda env create --name slim --file=SLiM_conda.yml` within the main directory.
  - `Fig_4/`
 	- `reduced_model.slim` contains the SLiM script that executes a single simulation, with parameters specified on the command line.
     - `CwSd_ParamSweep.py` calls `reduced_model.slim` to run a parameter sweep over $C_w$ and $\sigma_{dispersal}$.
