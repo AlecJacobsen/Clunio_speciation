@@ -47,9 +47,9 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
     - `simulate_vcfs.slim` is a slim script that exectutes a single simluation run, and outputs .vcf files of alleles every 200 generations starting at generation 100. Vcfs will be output to the `vcfs` directory. Running the script can be done by executing the following code within the `Genetic_model/Sup_fig_2/` directory to generate the three simulation runs in supplemental figure 2.
       ```
       conda activate slim
-      slim -d comp_sd=0.025 -d larval_dispersal=0.075 simulate_vcfs.slim
-      slim -d comp_sd=0.1 -d larval_dispersal=0.25 simulate_vcfs.slim
-      slim -d comp_sd=0.25 -d larval_dispersal=0.9 simulate_vcfs.slim
+      slim -d "params='_Cw0.025_Sd0.075'" -d comp_sd=0.025 -d larval_dispersal=0.075 simulate_vcfs.slim
+      slim -d "params='_Cw0.1_Sd0.25'" -d comp_sd=0.1 -d larval_dispersal=0.25 simulate_vcfs.slim
+      slim -d "params='_Cw0.25_Sd0.9'" -d comp_sd=0.25 -d larval_dispersal=0.9 simulate_vcfs.slim
       ```
  - `Sup_fig_3/`
     - `getSplit_model.slim` runs the simulation, stopping when the population diverges. It then outputs the generation number and distribution of phenotypes for the population for the generation before divergence was detected.
