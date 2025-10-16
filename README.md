@@ -6,12 +6,13 @@ doi: https://doi.org/10.1101/2025.09.16.676472
 sim = ecology_model(sd = 0.25, Cw = 0.1, K = 100, mu = 0.18, N0 = 10, X0 = 15, Y0 = 0, gens = 500)
 res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False)
 ```
-`Sd` corresponds to $\sigma_{dispersal}$, `Cw` is $C_w$, `K` is the carrying capacity, `mu` is the mutation rate, `N0` is the initial population size, `X0` is the initial phenotype of the population, `Y0` is the initial depth of the population, and `gens` is how many generations the simulation will run. `sim.simulate()` will return the number of peaks in the phenotypic distribution at the end of the simulation by default. If `return_array = True`, then it will return the distribution of phenotypes. If `return_array = True` and `return_Y = True`, then it will return both the distrbution of phenotypes and the distribution of individuals over depth. Finally, `return_N = True` returns the population size over the course of the simulation.
+`Sd` corresponds to $\sigma_{dispersal}$, `Cw` is $C_w$, `K` is the carrying capacity, `mu` is the mutation rate, `N0` is the initial population size, `X0` is the initial phenotype of the population, `Y0` is the initial depth of the population, and `gens` is how many generations the simulation will run. `sim.simulate()` will return the number of peaks in the phenotypic distribution at the end of the simulation by default. If `return_array = True`, then it will return the distribution of phenotypes. If `return_array = True` and `return_Y = True`, then it will return both the distrbution of phenotypes and the distribution of individuals over depth. Finally, `return_N = True` returns the population size per generation for the simulation.
 
 
 #############################################################
 
 !! All `.sbatch` files will have to be modified for use on other computing clusters !! 
+!! Note: Given the high number of simulations, most of these scripts will take several hours to several days to finish running !!
 
 #############################################################
 
@@ -25,7 +26,7 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
 
 #############################################################
 
-`Genetic_model/` subfolders contain the code to simulate the model with sexual reproduction, recombination, and an explicit genetic basis. These folders contain SLiM, Python, and Bash scripts. The SLiM scripts contain the code to run the simulations in SLiM. These SLiM scripts are called by the python scripts, which specify which parameters are to be used for each simulation and receive/parse the output from SLiM. Lastly, the Bash scripts schedule and manage running the simulations on the computing cluster. SLiM simulations are carried out within a conda environment. This environment can be created by executing `conda env create --name slim --file=SLiM_conda.yml` within the main directory.
+`Genetic_model/` subfolders contain the code to simulate the model with sexual reproduction, recombination, and an explicit genetic basis. These folders contain SLiM, Python, and Bash scripts. The SLiM scripts contain the code to run the simulations in SLiM. These SLiM scripts are called by the python scripts, which specify which parameters are to be used for each simulation and receive/parse the output from SLiM. Lastly, the Bash scripts schedule and manage running the simulations on the computing cluster. SLiM simulations are carried out within a conda environment. This environment can be created by executing `conda env create --name slim --file=SLiM_conda.yml` within the main directory. 
  - `Fig_4/`
     - `panel_A/`
 		- `reduced_model.slim` contains the SLiM script that executes a single simulation, with parameters specified on the command line.
@@ -44,7 +45,7 @@ res, res_y = sim.simulate(return_array = True, return_Y = True, return_N = False
     - `Gen_ParamSweep.py` calls `reduced_model_OutputsFreqs.slim` to run a parameter sweep over the genetic parameters $\sigma_{effecting}$, $P_{effecting}$, and $\sigma_{emergence}$, and collects the simulation results.
     - `Gen_paramSweep.sbatch` then launches `Gen_ParamSweep.py` 1000 times within slurm jobs, monitoring how many jobs are running at any one time. Results will be output to the `Gen_paramSweep` directory. Generating the data for figure 5 can be done by exectuing `sbatch Gen_paramSweep.sbatch` within the `Genetic_model/Fig_5/` directory.
  - `Sup_fig_2/`
-    - `simulate_vcfs.slim` is a slim script that exectutes a single simluation run, and outputs .vcf files of alleles every 200 generations starting at generation 100. Vcfs will be output to the `vcfs` directory. Running the script can be done by executing the following code within the `Genetic_model/Sup_fig_2/` directory to generate the three simulation runs in supplemental figure 2.
+    - `simulate_vcfs.slim` is a slim script that exectutes a single simluation run, and outputs variant call format (vcf) files of alleles every 200 generations starting at generation 100. Vcfs will be output to the `vcfs` directory. Running the script can be done by executing the following code within the `Genetic_model/Sup_fig_2/` directory to generate the three simulation runs in supplemental figure 2.
       ```
       conda activate slim
       slim -d "params='_Cw0.025_Sd0.075'" -d comp_sd=0.025 -d larval_dispersal=0.075 simulate_vcfs.slim
